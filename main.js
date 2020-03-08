@@ -49,6 +49,7 @@
             .then(function (myJson) {
                 // filter json for bus routes 1-10
                 let routeFilter = myJson.entity.filter(entity => parseInt(entity.vehicle.trip.routeId) <= 10);
+                //console.log(routeFilter);
                 // clear the layer group
                 busLayer.clearLayers();
 
@@ -56,14 +57,18 @@
                     onEachFeature: function (feature) {
                         let longitude = feature.coordinates[0];
                         let latitude = feature.coordinates[1];
-                        let marker = L.marker([latitude, longitude], { icon: bigBusIcon, rotationAngle: feature.bearing })
+                        // add condition to chose icon based on zoom
+                        let currentZoom = map.getZoom();
+                        let myIcon = currentZoom > 14 ? bigBusIcon : smallBusIcon;
+                        // use myIcon variable in marker creation
+                        let marker = L.marker([latitude, longitude], { icon: myIcon, rotationAngle: feature.bearing })
                             .bindPopup(
-                                `Bus Route: ${feature.routeNum}<br/>Speed: ${feature.speed}`
+                                `Bus Route: ${feature.routeNum}<br/>Speed: ${Math.round(feature.speed)} km/hr`
                             ).addTo(busLayer);
 
                         // set icon size based on zoom (although it resets every 7 seconds)
                         map.on('zoomend', function () {
-                            var currentZoom = map.getZoom();
+                            let currentZoom = map.getZoom();
                             if (currentZoom >= 14) {
                                 marker.setIcon(bigBusIcon);
                             }
