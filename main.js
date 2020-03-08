@@ -66,7 +66,7 @@
                                 `Bus Route: ${feature.routeNum}<br/>Speed: ${Math.round(feature.speed)} km/hr`
                             ).addTo(busLayer);
 
-                        // set icon size based on zoom (although it resets every 7 seconds)
+                        // change icon size based on zoom
                         map.on('zoomend', function () {
                             let currentZoom = map.getZoom();
                             if (currentZoom >= 14) {
